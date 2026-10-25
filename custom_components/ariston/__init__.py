@@ -12,12 +12,18 @@ import voluptuous as vol
 REQUIRED_ARISTON_VERSION = "0.19.9"
 
 def _ensure_ariston_installed():
-    """Ensure ariston library is installed, auto-upgrade if needed."""
+    """Ensure ariston library is installed, auto-upgrade if needed.
+    NEVER raises - logs errors and returns False if failed."""
     logger = logging.getLogger(__name__)
     
     try:
         import ariston
-        from packaging import version
+        # packaging is in HA core, but handle if missing
+        try:
+            from packaging import version
+        except ImportError:
+            logger.warning("packaging module not available, skipping version check")
+            return True
         
         current = getattr(ariston, '__version__', '0.0.0')
         required = REQUIRED_ARISTON_VERSION
@@ -32,31 +38,41 @@ def _ensure_ariston_installed():
             )
             if result.returncode != 0:
                 logger.error(f"Pip install failed: {result.stderr}")
-                raise RuntimeError(f"Failed to upgrade ariston: {result.stderr}")
+                return False
             logger.info("Ariston library upgraded successfully")
         else:
             logger.debug(f"Ariston {current} already satisfies requirement >= {required}")
+        return True
             
     except ImportError:
+        # ariston not installed
         logger.warning(f"Ariston library not found, installing ariston=={REQUIRED_ARISTON_VERSION}...")
-        result = subprocess.run(
-            [sys.executable, "-m", "pip", "install", f"ariston=={REQUIRED_ARISTON_VERSION}"],
-            capture_output=True,
-            text=True,
-            timeout=60,
-        )
-        if result.returncode != 0:
-            logger.error(f"Pip install failed: {result.stderr}")
-            raise RuntimeError(f"Failed to install ariston: {result.stderr}")
-        logger.info("Ariston library installed successfully")
+        try:
+            result = subprocess.run(
+                [sys.executable, "-m", "pip", "install", f"ariston=={REQUIRED_ARISTON_VERSION}"],
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            if result.returncode != 0:
+                logger.error(f"Pip install failed: {result.stderr}")
+                return False
+            logger.info("Ariston library installed successfully")
+            return True
+        except Exception as err:
+            logger.error(f"Failed to install ariston: {err}")
+            return False
     except Exception as err:
-        logger.error(f"Failed to install/upgrade ariston: {err}")
-        # Don't raise - let the import below fail with clear error
-        logger.critical("Ariston dependency NOT available - integration will not load")
+        logger.error(f"Unexpected error checking ariston: {err}")
+        return False
 
-# Initialize ariston dependency SYNCHRONOUSLY before other imports
-_ensure_ariston_installed()
+# Initialize ariston dependency - NEVER LET THIS CRASH THE MODULE
+try:
+    _ensure_ariston_installed()
+except Exception as err:
+    logging.getLogger(__name__).error(f"Auto-install check failed (non-fatal): {err}")
 
+# NOW import ariston - if fails, we handle gracefully below
 try:
     from ariston import Ariston, DeviceAttribute, SystemType
     from ariston.ariston_api import ConnectionException
@@ -64,8 +80,8 @@ try:
     _ARISTON_AVAILABLE = True
 except ImportError as err:
     _LOGGER = logging.getLogger(__name__)
-    _LOGGER.critical("CRITICAL: Cannot import ariston library: %s", err)
-    _LOGGER.critical("Check logs above for pip install errors. Integration cannot load.")
+    _LOGGER.error("Cannot import ariston library: %s", err)
+    _LOGGER.error("Integration will load but cannot connect to devices. Install 'ariston==0.19.9' manually.")
     _ARISTON_AVAILABLE = False
     # Define dummy classes to avoid NameError in async_setup_entry
     class Ariston: pass
