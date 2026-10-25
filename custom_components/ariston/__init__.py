@@ -121,7 +121,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN][entry.unique_id][BUS_ERRORS_COORDINATOR] = (
             bus_errors_coordinator
         )
-        await bus_errors_coordinator.async_config_entry_first_refresh()
+        # Bus errors are diagnostic data: a failing endpoint must not block setup.
+        await bus_errors_coordinator.async_refresh()
 
         if device.has_metering:
             energy_interval_minutes = entry.options.get(
@@ -135,7 +136,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 device.async_update_energy,
             )
             hass.data[DOMAIN][entry.unique_id][ENERGY_COORDINATOR] = energy_coordinator
-            await energy_coordinator.async_config_entry_first_refresh()
+            # Energy data is optional: do not fail setup if the endpoint is down.
+            await energy_coordinator.async_refresh()
 
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
