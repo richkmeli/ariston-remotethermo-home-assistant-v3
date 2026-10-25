@@ -19,6 +19,10 @@ def config_flow():
     flow = AristonConfigFlow()
     flow.hass = MagicMock()
     flow.hass.config_entries = MagicMock()
+    flow.hass.config_entries.async_entry_for_domain_unique_id = MagicMock(
+        return_value=None
+    )
+    flow.hass.config_entries.async_reload = AsyncMock()
     # The flow manager normally initializes the context before running a flow.
     flow.context = {"source": "user"}
     return flow

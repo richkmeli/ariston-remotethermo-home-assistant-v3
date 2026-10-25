@@ -106,37 +106,46 @@ async def test_coordinator_server_error_retry(coordinator, mock_device):
 
 
 async def test_coordinator_max_retries_exceeded(coordinator, mock_device):
-    """Test UpdateFailed raised after max retries."""
+    """Test that failures are reported after max retries."""
+
+    call_count = 0
 
     async def mock_update_always_fails():
+        nonlocal call_count
+        call_count += 1
         raise ConnectionException(500)
 
     coordinator.update_method = coordinator._async_update_with_retry(
         mock_update_always_fails
     )
 
-    from homeassistant.helpers.update_coordinator import UpdateFailed
+    # DataUpdateCoordinator swallows UpdateFailed and exposes it via state.
+    await coordinator.async_refresh()
 
-    with pytest.raises(UpdateFailed):
-        await coordinator.async_refresh()
+    assert call_count == 4  # initial attempt + MAX_RETRIES
+    assert coordinator.last_update_success is False
+    assert "500" in str(coordinator.last_exception)
 
 
 async def test_coordinator_non_retryable_error(coordinator, mock_device):
-    """Test non-retryable errors are raised immediately."""
+    """Test non-retryable errors are not retried."""
+
+    call_count = 0
 
     async def mock_update_auth_error():
+        nonlocal call_count
+        call_count += 1
         raise ConnectionException(401)
 
     coordinator.update_method = coordinator._async_update_with_retry(
         mock_update_auth_error
     )
 
-    from homeassistant.helpers.update_coordinator import UpdateFailed
+    await coordinator.async_refresh()
 
-    with pytest.raises(UpdateFailed) as exc_info:
-        await coordinator.async_refresh()
-
-    assert "401" in str(exc_info.value)
+    assert call_count == 1
+    assert coordinator.last_update_success is False
+    assert "401" in str(coordinator.last_exception)
 
 
 async def test_coordinator_timeout_retry(coordinator, mock_device):
