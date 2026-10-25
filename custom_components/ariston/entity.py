@@ -42,7 +42,7 @@ class AristonEntity(CoordinatorEntity, ABC):
         """Return device specific attributes."""
         return DeviceInfo(
             identifiers={(DOMAIN, self.device.serial_number or "")},
-            manufacturer=DOMAIN,
+            manufacturer="Ariston",
             name=self.device.name or NAME,
             sw_version=self.device.firmware_version,
             model=self.model,

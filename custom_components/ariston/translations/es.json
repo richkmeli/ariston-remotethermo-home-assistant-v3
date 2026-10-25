@@ -5,15 +5,17 @@
       "reauth_successful": "Re-autenticación correcta"
     },
     "error": {
-      "cannot_connect": "Fallo al conectar",
-      "invalid_auth": "Autenticación incorrecta",
+      "cannot_connect": "Error al conectar con la API de Ariston",
+      "invalid_auth": "Usuario o contraseña inválidos",
       "unknown": "Error inesperado"
     },
     "step": {
       "user": {
         "data": {
           "password": "Contraseña",
-          "username": "Usuario"
+          "username": "Usuario",
+          "api_url_setting": "URL de la API de Ariston",
+          "api_user_agent": "User Agent de la API de Ariston"
         }
       }
     }
@@ -21,13 +23,16 @@
   "options": {
     "step": {
       "init": {
+        "title": "Configurar Ariston",
         "data": {
-          "extra_energy_features": "Energia entidades extra ",
-          "scan_interval": "Intervalo de escaneo de zona (segundos)",
-          "energy_scan_interval": "Intervalo de escaneo de Energia(minutos)",
-          "bus_errors_scan_interval": "Intervalo de escaneo de errores de BUS(segundos)"
+          "scan_interval": "Intervalo de escaneo de zonas (segundos)",
+          "energy_scan_interval": "Intervalo de escaneo de datos energéticos (minutos)",
+          "bus_errors_scan_interval": "Intervalo de escaneo de errores de bus (segundos)",
+          "water_heater_temperature_unit_override": "Forzar unidad de temperatura del calentador de agua"
         },
-        "title": "Configurar Ariston"
+        "description": {
+          "water_heater_temperature_unit_override": "Forzar la unidad de medida para el calentador de agua. Establecer 'fahrenheit' si las temperaturas se muestran incorrectamente (ej: 253°F en lugar de 123°F). 'auto' usa el valor por defecto del dispositivo."
+        }
       }
     }
   }

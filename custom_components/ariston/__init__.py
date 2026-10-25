@@ -7,6 +7,7 @@ import logging
 import voluptuous as vol
 
 from ariston import Ariston, DeviceAttribute, SystemType
+from ariston.ariston_api import ConnectionException
 from ariston.const import ARISTON_API_URL, ARISTON_USER_AGENT
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -171,8 +172,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             )
     except ConfigEntryAuthFailed:
         raise
+    except ConnectionException as error:
+        _LOGGER.error("Connection error during setup: %s", error)
+        raise ConfigEntryNotReady from error
     except Exception as error:
-        _LOGGER.exception("")
+        _LOGGER.exception("Unexpected error during setup")
         raise ConfigEntryNotReady from error
 
     return True

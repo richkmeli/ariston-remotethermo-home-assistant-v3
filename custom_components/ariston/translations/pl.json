@@ -5,8 +5,8 @@
       "reauth_successful": "Ponowna autoryzacja zakończona sukcesem"
     },
     "error": {
-      "cannot_connect": "Nie można połączyć",
-      "invalid_auth": "Nieprawidłowa autoryzacja",
+      "cannot_connect": "Nie można połączyć z API Ariston",
+      "invalid_auth": "Nieprawidłowa nazwa użytkownika lub hasło",
       "unknown": "Nieoczekiwany błąd"
     },
     "step": {
@@ -14,7 +14,8 @@
         "data": {
           "password": "Hasło",
           "username": "Nazwa użytkownika",
-          "api_url_setting": "Adres URL API Ariston"
+          "api_url_setting": "Adres URL API Ariston",
+          "api_user_agent": "User Agent API Ariston"
         }
       }
     }
@@ -22,13 +23,16 @@
   "options": {
     "step": {
       "init": {
+        "title": "Konfiguruj Ariston",
         "data": {
-          "extra_energy_features": "Dodatkowe encje związane z energią",
-          "scan_interval": "Interwał skanowania strefy (sekundy)",
-          "energy_scan_interval": "Interwał skanowania energii (minuty)",
-          "bus_errors_scan_interval": "Interwał skanowania błędów magistrali (sekundy)"
+          "scan_interval": "Interwał skanowania stref (sekundy)",
+          "energy_scan_interval": "Interwał skanowania danych energetycznych (minuty)",
+          "bus_errors_scan_interval": "Interwał skanowania błędów magistrali (sekundy)",
+          "water_heater_temperature_unit_override": "Nadpisz jednostkę temperatury grzejnika wody"
         },
-        "title": "Konfiguruj Ariston"
+        "description": {
+          "water_heater_temperature_unit_override": "Wymuś jednostkę miary dla grzejnika wody. Ustaw 'fahrenheit', jeśli temperatury wyświetlają się błędnie (np. 253°F zamiast 123°F). 'auto' używa ustawienia urządzenia."
+        }
       }
     }
   }

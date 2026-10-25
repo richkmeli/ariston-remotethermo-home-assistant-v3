@@ -39,13 +39,7 @@ from homeassistant.components.switch import SwitchEntityDescription
 from homeassistant.const import UnitOfEnergy, UnitOfTemperature, UnitOfTime
 from homeassistant.helpers.entity import EntityCategory, EntityDescription
 
-try:
-    from homeassistant.components.water_heater import WaterHeaterEntityDescription
-except ImportError:
-    # compatibility code for HA < 2025.1
-    from homeassistant.components.water_heater import WaterHeaterEntityEntityDescription
-
-    WaterHeaterEntityDescription = WaterHeaterEntityEntityDescription
+from homeassistant.components.water_heater import WaterHeaterEntityDescription
 
 import datetime as dt
 

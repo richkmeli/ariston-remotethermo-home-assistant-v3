@@ -5,8 +5,8 @@
       "reauth_successful": "L'autenticació ha estat correcta"
     },
     "error": {
-      "cannot_connect": "No s'ha pogut connectar",
-      "invalid_auth": "L'autenticació ha fallat",
+      "cannot_connect": "No s'ha pogut connectar a l'API d'Ariston",
+      "invalid_auth": "Usuari o contrasenya invàlids",
       "unknown": "Error inesperat"
     },
     "step": {
@@ -14,7 +14,8 @@
         "data": {
           "password": "Contrasenya",
           "username": "Nom d'usuari",
-          "api_url_setting": "URL de l'API d'Ariston"
+          "api_url_setting": "URL de l'API d'Ariston",
+          "api_user_agent": "User Agent de l'API d'Ariston"
         }
       }
     }
@@ -22,13 +23,16 @@
   "options": {
     "step": {
       "init": {
+        "title": "Configura l'Ariston",
         "data": {
-          "extra_energy_features": "Entitats extres relacionades amb l'energia",
-          "scan_interval": "Interval d'exploració de zones (segons)",
-          "energy_scan_interval": "Interval d'exploració d'energia (minuts)",
-          "bus_errors_scan_interval": "Interval d'exploració d'errors de bus (segons)"
+          "scan_interval": "Interval d'escaneig de zones (segons)",
+          "energy_scan_interval": "Interval d'escaneig de dades energètiques (minuts)",
+          "bus_errors_scan_interval": "Interval d'escaneig d'errors de bus (segons)",
+          "water_heater_temperature_unit_override": "Forçar unitat de temperatura del calentador d'aigua"
         },
-        "title": "Configura l'Ariston"
+        "description": {
+          "water_heater_temperature_unit_override": "Forçar la unitat de mesura per al calentador d'aigua. Establiu 'fahrenheit' si les temperatures es mostren incorrectament (ex: 253°F en lloc de 123°F). 'auto' usa el valor per defecte del dispositiu."
+        }
       }
     }
   }

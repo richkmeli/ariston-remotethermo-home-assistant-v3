@@ -5,15 +5,17 @@
       "reauth_successful": "Повторная аутентификация прошла успешно."
     },
     "error": {
-      "cannot_connect": "Не удалось подключиться.",
-      "invalid_auth": "Неверная аутентификация.",
+      "cannot_connect": "Не удалось подключиться к API Ariston.",
+      "invalid_auth": "Неверное имя пользователя или пароль.",
       "unknown": "Непредвиденная ошибка."
     },
     "step": {
       "user": {
         "data": {
           "password": "Пароль",
-          "username": "Имя пользователя"
+          "username": "Имя пользователя",
+          "api_url_setting": "URL API Ariston",
+          "api_user_agent": "User Agent API Ariston"
         }
       }
     }
@@ -21,12 +23,16 @@
   "options": {
     "step": {
       "init": {
+        "title": "Настроить Аристон",
         "data": {
-          "extra_energy_features": "Дополнительные объекты, связанные с энергией.",
-          "scan_interval": "Интервал сканирования зоны (секунды).",
-          "energy_scan_interval": "Интервал сканирования энергии (минуты)."
+          "scan_interval": "Интервал сканирования зон (секунды).",
+          "energy_scan_interval": "Интервал сканирования энергоданных (минуты).",
+          "bus_errors_scan_interval": "Интервал сканирования ошибок шины (секунды).",
+          "water_heater_temperature_unit_override": "Переопределение единицы температуры водонагревателя"
         },
-        "title": "Настроить Аристон"
+        "description": {
+          "water_heater_temperature_unit_override": "Принудительно установить единицу измерения для водонагревателя. Установите 'fahrenheit', если температуры отображаются неверно (напр., 253°F вместо 123°F). 'auto' использует настройку устройства."
+        }
       }
     }
   }

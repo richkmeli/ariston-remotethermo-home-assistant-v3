@@ -3,21 +3,21 @@
     "step": {
       "user": {
         "data": {
-          "username": "[%key:common::config_flow::data::username%]",
-          "password": "[%key:common::config_flow::data::password%]",
-          "api_url_setting": "[%key:common::config_flow::data::api_url_setting%]",
-          "api_user_agent": "[%key:common::config_flow::data::api_user_agent%]"
+          "username": "Username",
+          "password": "Password",
+          "api_url_setting": "Ariston API URL",
+          "api_user_agent": "Ariston API User Agent"
         }
       }
     },
     "error": {
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
+      "cannot_connect": "Failed to connect to Ariston API",
+      "invalid_auth": "Invalid username or password",
+      "unknown": "Unexpected error occurred"
     },
     "abort": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
-      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+      "already_configured": "Device is already configured",
+      "reauth_successful": "Re-authentication was successful"
     }
   },
   "options": {
@@ -25,7 +25,6 @@
       "init": {
         "title": "Configure Ariston",
         "data": {
-          "extra_energy_features": "Extra energy related entities",
           "scan_interval": "Zone Scan Interval (seconds)",
           "energy_scan_interval": "Energy Scan Interval (minutes)",
           "bus_errors_scan_interval": "Bus Errors Scan Interval (seconds)",

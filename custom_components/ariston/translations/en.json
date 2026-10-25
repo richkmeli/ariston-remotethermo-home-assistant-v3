@@ -5,17 +5,17 @@
       "reauth_successful": "Re-authentication was successful"
     },
     "error": {
-      "cannot_connect": "Failed to connect",
-      "invalid_auth": "Invalid authentication",
-      "unknown": "Unexpected error"
+      "cannot_connect": "Failed to connect to Ariston API",
+      "invalid_auth": "Invalid username or password",
+      "unknown": "Unexpected error occurred"
     },
     "step": {
       "user": {
         "data": {
           "password": "Password",
           "username": "Username",
-          "api_url_setting": "Ariston API url",
-          "api_user_agent": "Ariston API user agent"
+          "api_url_setting": "Ariston API URL",
+          "api_user_agent": "Ariston API User Agent"
         }
       }
     }
@@ -23,13 +23,16 @@
   "options": {
     "step": {
       "init": {
+        "title": "Configure Ariston",
         "data": {
-          "extra_energy_features": "Extra energy related entities",
           "scan_interval": "Zone Scan Interval (seconds)",
           "energy_scan_interval": "Energy Scan Interval (minutes)",
-          "bus_errors_scan_interval": "Bus Errors Scan Interval (seconds)"
+          "bus_errors_scan_interval": "Bus Errors Scan Interval (seconds)",
+          "water_heater_temperature_unit_override": "Water Heater Temperature Unit Override"
         },
-        "title": "Configure Ariston"
+        "description": {
+          "water_heater_temperature_unit_override": "Override the temperature unit for water heater. Set to 'fahrenheit' if temperatures display incorrectly (e.g., 253°F instead of 123°F). 'auto' uses the device default."
+        }
       }
     }
   }

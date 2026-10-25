@@ -1,12 +1,12 @@
 {
   "config": {
-    "avort": {
+    "abort": {
       "already_configured": "L'appareil est déjà configuré",
       "reauth_successful": "La réauthentification a réussi"
     },
     "error": {
-      "cannot_connect": "Échec de la connexion",
-      "invalid_auth": "Authentification invalide",
+      "cannot_connect": "Échec de la connexion à l'API Ariston",
+      "invalid_auth": "Nom d'utilisateur ou mot de passe invalide",
       "unknown": "Erreur inattendue"
     },
     "step": {
@@ -14,7 +14,8 @@
         "data": {
           "password": "Mot de passe",
           "username": "Nom d'utilisateur",
-          "api_url_setting": "URL de l'API Ariston"
+          "api_url_setting": "URL de l'API Ariston",
+          "api_user_agent": "User Agent de l'API Ariston"
         }
       }
     }
@@ -22,13 +23,16 @@
   "options": {
     "step": {
       "init": {
-        "données": {
-          "extra_energy_features": "Entités supplémentaires liées à l'énergie",
-          "scan_interval": "Intervalle de scan de zone (secondes)",
-          "energy_scan_interval": "Intervalle d'analyse énergétique (minutes)",
-          "bus_errors_scan_interval": "Intervalle d'analyse des erreurs de bus (secondes)"
+        "title": "Configurer Ariston",
+        "data": {
+          "scan_interval": "Intervalle de scan des zones (secondes)",
+          "energy_scan_interval": "Intervalle de scan des données énergétiques (minutes)",
+          "bus_errors_scan_interval": "Intervalle de scan des erreurs de bus (secondes)",
+          "water_heater_temperature_unit_override": "Forcer l'unité de température du chauffe-eau"
         },
-        "title": "Configurer Ariston"
+        "description": {
+          "water_heater_temperature_unit_override": "Forcer l'unité de mesure pour le chauffe-eau. Mettre 'fahrenheit' si les températures s'affichent mal (ex: 253°F au lieu de 123°F). 'auto' utilise le réglage du dispositif."
+        }
       }
     }
   }

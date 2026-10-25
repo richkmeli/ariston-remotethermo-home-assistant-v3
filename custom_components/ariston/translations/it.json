@@ -13,7 +13,9 @@
       "user": {
         "data": {
           "password": "Password",
-          "username": "Nome Utente"
+          "username": "Nome Utente",
+          "api_url_setting": "URL API Ariston",
+          "api_user_agent": "User Agent API Ariston"
         }
       }
     }
@@ -21,12 +23,16 @@
   "options": {
     "step": {
       "init": {
+        "title": "Configura Ariston",
         "data": {
-          "extra_energy_features": "Entità Extra relative al controllo energetico",
-          "scan_interval": "Intervallo scansione dati zone (in secondi)",
-          "energy_scan_interval": "Intervallo scansione dati energetici (in minuti)"
+          "scan_interval": "Intervallo scansione zone (secondi)",
+          "energy_scan_interval": "Intervallo scansione dati energetici (minuti)",
+          "bus_errors_scan_interval": "Intervallo scansione errori bus (secondi)",
+          "water_heater_temperature_unit_override": "Override unità temperatura scaldabagno"
         },
-        "title": "Configura Ariston"
+        "description": {
+          "water_heater_temperature_unit_override": "Forza l'unità di misura per lo scaldabagno. Imposta 'fahrenheit' se le temperature appaiono errate (es. 253°F invece di 123°F). 'auto' usa l'impostazione del dispositivo."
+        }
       }
     }
   }

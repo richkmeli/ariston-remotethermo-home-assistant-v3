@@ -2,6 +2,7 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 [![HACS Action](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/hacs.yml/badge.svg)](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/hacs.yml)
 [![Validate with hassfest](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/hassfest.yml/badge.svg)](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/hassfest.yml)
+[![CI](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/ci.yml/badge.svg)](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/ci.yml)
 # Ariston NET remotethermo integration for Home Assistant
 This is a fork of [fustom/ariston-remotethermo-home-assistant-v3](https://github.com/fustom/ariston-remotethermo-home-assistant-v3), maintained by [@richkmeli](https://github.com/richkmeli).
 The original integration was inspired by chomupashchuk's work https://github.com/chomupashchuk/ariston-remotethermo-home-assistant-v2
@@ -18,19 +19,45 @@ It does not use the Ariston website: it uses the Ariston API reverse-engineered 
 | Less sensors, switches, etc |  More sensors, switches, etc |
 | New code, may contain a lot of bugs | Old, tested code |
 
+## Changelog v0.20.0
+### Fixed
+- **Config flow strings**: Resolved placeholder references in `strings.json` for proper UI translations
+- **Device registry**: Fixed manufacturer name to "Ariston" for correct device identification
+- **Exception handling**: Replaced broad exception catches with specific `ConnectionException` handling
+- **Rate limiting**: Enhanced coordinator with retry logic for 429, 5xx errors, and timeouts with exponential backoff
+
+### Changed
+- **Minimum Home Assistant**: Raised from 2023.1 to 2024.1
+- **Removed deprecated code**: Dropped `WaterHeaterEntityEntityDescription` compatibility layer
+- **Type hints**: Added comprehensive type annotations across the codebase
+
+### Added
+- **Unit tests**: Basic test structure for coordinator and config flow (`tests/`)
+- **CI/CD**: GitHub Actions workflow for testing, linting, and validation
+- **CHANGELOG.md**: Version history tracking
+
+### Internal
+- Improved logging with context across all components
+- Updated all 9 language translations (en, it, fr, es, pt, ru, ca, pl, ua)
+
 ## TODO
-- Localization. Available in English, Catalan, Italian, Russian and Ukrainian.
-- More sensors, switches, binary sensors, selectors, services.
-- Exception handling.
-- More logs.
-- Unit tests.
-- Fun.
+- [x] Localization. Available in English, Catalan, Italian, Russian, Ukrainian, French, Spanish, Portuguese, Polish.
+- [ ] More sensors, switches, binary sensors, selectors, services.
+- [x] Exception handling improvements.
+- [ ] More detailed debug logging.
+- [x] Unit tests (basic structure).
+- [ ] Integration tests.
+- [ ] Fun.
 
 ## Integration was tested on and works with:
 - Ariston Alteas One 24
 - Ariston Velis Evo
 - Ariston Velis Lux
 - Ariston Lydos Hybrid
+- Ariston Genus One
+- Ariston Nuos Split
+- Ariston Thision S
+- Chaffoteaux INOA S 24
 
 Feel free to test something else and open an issue or pull request in this fork: https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/issues
 
@@ -41,13 +68,13 @@ Use the add integration UI to set up your device.
 > **Fork note:** HACS installs this fork only when a release with the `ariston-remotethermo-home-assistant-v3.zip` asset is published. Until then, install it manually by copying `custom_components/ariston` into your Home Assistant configuration.
 
 | ![Kazam_screenshot_00003](https://user-images.githubusercontent.com/6751243/146653448-ff7b6f9d-cbf1-4555-9a75-61bf68bc9d3e.png) | ![Kazam_screenshot_00004](https://user-images.githubusercontent.com/6751243/146653484-52e39d78-7c6f-44ae-888d-acf246147290.png) | ![Kazam_screenshot_00010](https://user-images.githubusercontent.com/6751243/147890590-6c4ebf38-16d9-421f-9b81-8f43298ec62f.png) |
-:-------------------------:|:-------------------------:|:-------------------------:
+|:-------------------------:|:-------------------------:|:-------------------------:|
 
 ![Kazam_screenshot_00011](https://user-images.githubusercontent.com/6751243/147890611-54ae2d28-bf5a-45f8-ba92-e7a00a22615c.png)
 
 ![Kazam_screenshot_00012](https://user-images.githubusercontent.com/6751243/147989103-cdac510f-e6f6-461f-a88e-b8ff0204c34f.png)
 
 | ![Kazam_screenshot_00013](https://user-images.githubusercontent.com/6751243/148247717-5211c01c-561f-4a4e-b4b5-47a680e04a68.png) | ![Kazam_screenshot_00009](https://user-images.githubusercontent.com/6751243/146657797-ed14b741-595a-48a6-9126-1acca3beb69f.png) |
-:-------------------------:|:-------------------------:
+|:-------------------------:|:-------------------------:|
 
 <h1 align="center">Peace Love Freedom</h1>
