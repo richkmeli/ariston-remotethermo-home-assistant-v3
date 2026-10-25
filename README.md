@@ -1,25 +1,26 @@
-[![CodeQL](https://github.com/fustom/ariston-remotethermo-home-assistant-v3/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/fustom/ariston-remotethermo-home-assistant-v3/actions/workflows/codeql.yml)
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
-[![HACS Action](https://github.com/fustom/ariston-remotethermo-home-assistant-v3/actions/workflows/hacs.yml/badge.svg)](https://github.com/fustom/ariston-remotethermo-home-assistant-v3/actions/workflows/hacs.yml)
-[![Validate with hassfest](https://github.com/fustom/ariston-remotethermo-home-assistant-v3/actions/workflows/hassfest.yml/badge.svg)](https://github.com/fustom/ariston-remotethermo-home-assistant-v3/actions/workflows/hassfest.yml)
+[![CodeQL](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/codeql.yml)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+[![HACS Action](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/hacs.yml/badge.svg)](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/hacs.yml)
+[![Validate with hassfest](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/hassfest.yml/badge.svg)](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/actions/workflows/hassfest.yml)
 # Ariston NET remotethermo integration for Home Assistant
-This integration inspired by chomupashchuk fantastic work https://github.com/chomupashchuk/ariston-remotethermo-home-assistant-v2
-But it does not use Ariston website. It uses Ariston API what I reversed engineered.
+This is a fork of [fustom/ariston-remotethermo-home-assistant-v3](https://github.com/fustom/ariston-remotethermo-home-assistant-v3), maintained by [@richkmeli](https://github.com/richkmeli).
+The original integration was inspired by chomupashchuk's work https://github.com/chomupashchuk/ariston-remotethermo-home-assistant-v2
+It does not use the Ariston website: it uses the Ariston API reverse-engineered by the upstream project.
 
 
-| [This integration](https://github.com/fustom/ariston-remotethermo-home-assistant-v3)  | [Chomupashchuk's v2 integration](https://github.com/chomupashchuk/ariston-remotethermo-home-assistant-v2) |
+| [This fork](https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3)  | [Chomupashchuk's v2 integration](https://github.com/chomupashchuk/ariston-remotethermo-home-assistant-v2) |
 | ------------- | ------------- |
 | Uses real API  | Uses Ariston website  |
 | Faster set/get data  | Sometimes needs minutes to set/get data |
-| Easy to setup with UI | Not so easy to setup (only with configuration.yaml) |
-| Integration & devices & entites | Only entites |
+| Easy to set up with UI | Not so easy to set up (only with configuration.yaml) |
+| Integration & devices & entities | Only entities |
 | Proper asynchronous integration, clean code | Hard to understand and maintain (ariston.py has more than 4000 lines) |
 | Less sensors, switches, etc |  More sensors, switches, etc |
-| New code, may contains lot of bugs | Old, tested code |
+| New code, may contain a lot of bugs | Old, tested code |
 
 ## TODO
-- Localization. Avaliable in english, catalan, italian, russian and ukranian.
-- More sensors, switches, binary sersors, selectors, services.
+- Localization. Available in English, Catalan, Italian, Russian and Ukrainian.
+- More sensors, switches, binary sensors, selectors, services.
 - Exception handling.
 - More logs.
 - Unit tests.
@@ -31,11 +32,13 @@ But it does not use Ariston website. It uses Ariston API what I reversed enginee
 - Ariston Velis Lux
 - Ariston Lydos Hybrid
 
-Feel free to test something else and create new issue / pull request if something goes wrong.
+Feel free to test something else and open an issue or pull request in this fork: https://github.com/richkmeli/ariston-remotethermo-home-assistant-v3/issues
 
 ## Installation
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=fustom&repository=ariston-remotethermo-home-assistant-v3&category=integration) or copy ariston folder to your configuration/custom_components path.
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=richkmeli&repository=ariston-remotethermo-home-assistant-v3&category=integration) or copy the `custom_components/ariston` folder to your configuration/custom_components path.
 Use the add integration UI to set up your device.
+
+> **Fork note:** HACS installs this fork only when a release with the `ariston-remotethermo-home-assistant-v3.zip` asset is published. Until then, install it manually by copying `custom_components/ariston` into your Home Assistant configuration.
 
 | ![Kazam_screenshot_00003](https://user-images.githubusercontent.com/6751243/146653448-ff7b6f9d-cbf1-4555-9a75-61bf68bc9d3e.png) | ![Kazam_screenshot_00004](https://user-images.githubusercontent.com/6751243/146653484-52e39d78-7c6f-44ae-888d-acf246147290.png) | ![Kazam_screenshot_00010](https://user-images.githubusercontent.com/6751243/147890590-6c4ebf38-16d9-421f-9b81-8f43298ec62f.png) |
 :-------------------------:|:-------------------------:|:-------------------------:
