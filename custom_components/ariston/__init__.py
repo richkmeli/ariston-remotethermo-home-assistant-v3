@@ -24,33 +24,49 @@ def _ensure_ariston_installed():
         
         if version.parse(current) < version.parse(required):
             logger.info(f"Upgrading ariston from {current} to {required}...")
-            subprocess.check_call(
+            result = subprocess.run(
                 [sys.executable, "-m", "pip", "install", f"ariston=={required}"],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=60,
             )
+            if result.returncode != 0:
+                logger.error(f"Pip install failed: {result.stderr}")
+                raise RuntimeError(f"Failed to upgrade ariston: {result.stderr}")
             logger.info("Ariston library upgraded successfully")
         else:
             logger.debug(f"Ariston {current} already satisfies requirement >= {required}")
             
     except ImportError:
         logger.warning(f"Ariston library not found, installing ariston=={REQUIRED_ARISTON_VERSION}...")
-        subprocess.check_call(
+        result = subprocess.run(
             [sys.executable, "-m", "pip", "install", f"ariston=={REQUIRED_ARISTON_VERSION}"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            timeout=60,
         )
+        if result.returncode != 0:
+            logger.error(f"Pip install failed: {result.stderr}")
+            raise RuntimeError(f"Failed to install ariston: {result.stderr}")
         logger.info("Ariston library installed successfully")
     except Exception as err:
         logger.error(f"Failed to install/upgrade ariston: {err}")
-        raise
+        # Don't raise - let the import below fail with clear error
+        logger.critical("Ariston dependency NOT available - integration will not load")
 
 # Initialize ariston dependency SYNCHRONOUSLY before other imports
 _ensure_ariston_installed()
 
-from ariston import Ariston, DeviceAttribute, SystemType
-from ariston.ariston_api import ConnectionException
-from ariston.const import ARISTON_API_URL, ARISTON_USER_AGENT
+try:
+    from ariston import Ariston, DeviceAttribute, SystemType
+    from ariston.ariston_api import ConnectionException
+    from ariston.const import ARISTON_API_URL, ARISTON_USER_AGENT
+except ImportError as err:
+    _LOGGER = logging.getLogger(__name__)
+    _LOGGER.critical("CRITICAL: Cannot import ariston library: %s", err)
+    _LOGGER.critical("Check logs above for pip install errors. Integration cannot load.")
+    raise
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_DEVICE_ID,
