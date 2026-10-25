@@ -5,21 +5,28 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   release:
-    name: Prepare release
+    name: Build and upload release asset
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.0.0
-      - name: Zip Release
-        uses: TheDoctor0/zip-release@0.7.1
+        uses: actions/checkout@v4
+
+      # HACS extracts the release asset directly into custom_components/ariston,
+      # so the files must be at the ROOT of the zip (no enclosing "ariston/").
+      - name: Build HACS-compatible zip
+        run: |
+          git archive \
+            --format=zip \
+            --output="$GITHUB_WORKSPACE/ariston-remotethermo-home-assistant-v3.zip" \
+            "${{ github.event.release.tag_name }}:custom_components/ariston"
+          unzip -l ariston-remotethermo-home-assistant-v3.zip
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
         with:
-          filename: ariston-remotethermo-home-assistant-v3.zip
-          directory: custom_components/ariston
-      - name: Upload to Release Action
-        uses: Shopify/upload-to-release@v1.0.1
-        with:
-          name: ariston-remotethermo-home-assistant-v3.zip
-          path: custom_components/ariston/ariston-remotethermo-home-assistant-v3.zip
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          files: ariston-remotethermo-home-assistant-v3.zip

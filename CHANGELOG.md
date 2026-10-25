@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.7] - 2026-10-25
+
+### Fixed
+- **HACS install layout**: release assets now contain the integration files at the ZIP root instead of an extra `ariston/` folder. HACS extracts the asset into `custom_components/ariston`, so the old layout produced `custom_components/ariston/ariston/…` and Home Assistant could not find `__init__.py`/`manifest.json` ("No setup or config entry setup function defined").
+- **Release workflow**: replaced the unmaintained upload action with `softprops/action-gh-release` and build the asset with `git archive` so the layout is deterministic.
+- **CI artifact**: same flat ZIP layout as the release asset.
+
+### Removed
+- **Import-time `pip install`**: `__init__.py` no longer runs `pip` while Home Assistant imports the integration. This blocked startup for up to 60 s on every load (`ariston` does not expose `__version__`, so the check always ran) and could not fix a misplaced/missing module. Dependencies are installed by Home Assistant from `manifest.json`.
+
 ## [0.20.0] - 2025-10-25
 
 ### Fixed

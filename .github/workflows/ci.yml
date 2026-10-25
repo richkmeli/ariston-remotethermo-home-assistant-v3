@@ -75,10 +75,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Keep the same layout as the release asset: files at the root of the zip,
+      # because HACS extracts it into custom_components/ariston.
       - name: Create release zip
         run: |
-          cd custom_components
-          zip -r ../ariston-remotethermo-home-assistant-v3.zip ariston
+          git archive \
+            --format=zip \
+            --output="$GITHUB_WORKSPACE/ariston-remotethermo-home-assistant-v3.zip" \
+            HEAD:custom_components/ariston
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
