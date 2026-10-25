@@ -7,7 +7,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from ariston.ariston_api import ConnectionException
 
-from custom_components.ariston.config_flow import AristonConfigFlow, STEP_USER_DATA_SCHEMA
+from custom_components.ariston.config_flow import (
+    AristonConfigFlow,
+    STEP_USER_DATA_SCHEMA,
+)
 
 
 @pytest.fixture
@@ -16,6 +19,8 @@ def config_flow():
     flow = AristonConfigFlow()
     flow.hass = MagicMock()
     flow.hass.config_entries = MagicMock()
+    # The flow manager normally initializes the context before running a flow.
+    flow.context = {"source": "user"}
     return flow
 
 
@@ -41,9 +46,9 @@ async def test_async_step_user_success(config_flow):
         mock_ariston = AsyncMock()
         mock_ariston_class.return_value = mock_ariston
         mock_ariston.async_connect = AsyncMock(return_value=True)
-        mock_ariston.async_discover = AsyncMock(return_value=[
-            {"gw": "gateway123", "name": "Test Device", "sn": "SN123"}
-        ])
+        mock_ariston.async_discover = AsyncMock(
+            return_value=[{"gw": "gateway123", "name": "Test Device", "sn": "SN123"}]
+        )
 
         result = await config_flow.async_step_user(user_input)
 
@@ -84,7 +89,9 @@ async def test_async_step_user_connection_error(config_flow):
     with patch("custom_components.ariston.config_flow.Ariston") as mock_ariston_class:
         mock_ariston = AsyncMock()
         mock_ariston_class.return_value = mock_ariston
-        mock_ariston.async_connect = AsyncMock(side_effect=ConnectionException("Connection failed"))
+        mock_ariston.async_connect = AsyncMock(
+            side_effect=ConnectionException("Connection failed")
+        )
 
         result = await config_flow.async_step_user(user_input)
 
@@ -126,10 +133,12 @@ async def test_async_step_user_multiple_devices(config_flow):
         mock_ariston = AsyncMock()
         mock_ariston_class.return_value = mock_ariston
         mock_ariston.async_connect = AsyncMock(return_value=True)
-        mock_ariston.async_discover = AsyncMock(return_value=[
-            {"gw": "gateway1", "name": "Device 1", "sn": "SN1"},
-            {"gw": "gateway2", "name": "Device 2", "sn": "SN2"},
-        ])
+        mock_ariston.async_discover = AsyncMock(
+            return_value=[
+                {"gw": "gateway1", "name": "Device 1", "sn": "SN1"},
+                {"gw": "gateway2", "name": "Device 2", "sn": "SN2"},
+            ]
+        )
 
         result = await config_flow.async_step_user(user_input)
 

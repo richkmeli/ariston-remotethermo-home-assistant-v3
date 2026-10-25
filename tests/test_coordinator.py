@@ -12,11 +12,21 @@ from ariston.base_device import AristonBaseDevice
 from custom_components.ariston.coordinator import DeviceDataUpdateCoordinator
 
 
+@pytest.fixture(autouse=True)
+def no_retry_sleep(monkeypatch):
+    """Skip real backoff delays so the retry tests run instantly."""
+
+    async def _sleep(_delay):
+        return None
+
+    monkeypatch.setattr("asyncio.sleep", _sleep)
+
+
 @pytest.fixture
-def mock_hass():
+async def mock_hass():
     """Create a mock Home Assistant instance."""
     hass = MagicMock()
-    hass.loop = asyncio.get_event_loop()
+    hass.loop = asyncio.get_running_loop()
     return hass
 
 
@@ -32,6 +42,7 @@ def mock_device():
 @pytest.fixture
 def coordinator(mock_hass, mock_device):
     """Create a coordinator instance."""
+
     async def mock_update():
         pass
 
@@ -62,7 +73,9 @@ async def test_coordinator_rate_limit_backoff(coordinator, mock_device):
             raise ConnectionException(429)
         return None
 
-    coordinator.update_method = coordinator._async_update_with_retry(mock_update_rate_limited)
+    coordinator.update_method = coordinator._async_update_with_retry(
+        mock_update_rate_limited
+    )
 
     # Should succeed on third attempt
     await coordinator.async_refresh()
@@ -82,7 +95,9 @@ async def test_coordinator_server_error_retry(coordinator, mock_device):
             raise ConnectionException(503)
         return None
 
-    coordinator.update_method = coordinator._async_update_with_retry(mock_update_server_error)
+    coordinator.update_method = coordinator._async_update_with_retry(
+        mock_update_server_error
+    )
 
     # Should succeed on third attempt
     await coordinator.async_refresh()
@@ -92,10 +107,13 @@ async def test_coordinator_server_error_retry(coordinator, mock_device):
 
 async def test_coordinator_max_retries_exceeded(coordinator, mock_device):
     """Test UpdateFailed raised after max retries."""
+
     async def mock_update_always_fails():
         raise ConnectionException(500)
 
-    coordinator.update_method = coordinator._async_update_with_retry(mock_update_always_fails)
+    coordinator.update_method = coordinator._async_update_with_retry(
+        mock_update_always_fails
+    )
 
     from homeassistant.helpers.update_coordinator import UpdateFailed
 
@@ -105,10 +123,13 @@ async def test_coordinator_max_retries_exceeded(coordinator, mock_device):
 
 async def test_coordinator_non_retryable_error(coordinator, mock_device):
     """Test non-retryable errors are raised immediately."""
+
     async def mock_update_auth_error():
         raise ConnectionException(401)
 
-    coordinator.update_method = coordinator._async_update_with_retry(mock_update_auth_error)
+    coordinator.update_method = coordinator._async_update_with_retry(
+        mock_update_auth_error
+    )
 
     from homeassistant.helpers.update_coordinator import UpdateFailed
 
@@ -129,7 +150,9 @@ async def test_coordinator_timeout_retry(coordinator, mock_device):
             raise asyncio.TimeoutError()
         return None
 
-    coordinator.update_method = coordinator._async_update_with_retry(mock_update_timeout)
+    coordinator.update_method = coordinator._async_update_with_retry(
+        mock_update_timeout
+    )
 
     await coordinator.async_refresh()
 
