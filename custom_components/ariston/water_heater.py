@@ -124,9 +124,15 @@ class AristonWaterHeater(AristonEntity, WaterHeaterEntity):
         if self._temp_unit_override == "auto":
             return temp
         device_unit = self.device.water_heater_temperature_unit
-        if self._temp_unit_override == "celsius" and device_unit == UnitOfTemperature.FAHRENHEIT:
+        if (
+            self._temp_unit_override == "celsius"
+            and device_unit == UnitOfTemperature.FAHRENHEIT
+        ):
             return (temp - 32) * 5 / 9
-        if self._temp_unit_override == "fahrenheit" and device_unit == UnitOfTemperature.CELSIUS:
+        if (
+            self._temp_unit_override == "fahrenheit"
+            and device_unit == UnitOfTemperature.CELSIUS
+        ):
             return temp * 9 / 5 + 32
         return temp
 
@@ -178,9 +184,15 @@ class AristonWaterHeater(AristonEntity, WaterHeaterEntity):
         if self._temp_unit_override == "auto":
             return temp
         device_unit = self.device.water_heater_temperature_unit
-        if self._temp_unit_override == "celsius" and device_unit == UnitOfTemperature.FAHRENHEIT:
+        if (
+            self._temp_unit_override == "celsius"
+            and device_unit == UnitOfTemperature.FAHRENHEIT
+        ):
             return temp * 9 / 5 + 32
-        if self._temp_unit_override == "fahrenheit" and device_unit == UnitOfTemperature.CELSIUS:
+        if (
+            self._temp_unit_override == "fahrenheit"
+            and device_unit == UnitOfTemperature.CELSIUS
+        ):
             return (temp - 32) * 5 / 9
         return temp
 

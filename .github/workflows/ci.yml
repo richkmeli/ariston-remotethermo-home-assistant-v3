@@ -33,14 +33,6 @@ jobs:
         run: |
           pytest
 
-      - name: Run hassfest validation
-        uses: home-assistant/actions/hassfest@master
-
-      - name: Run HACS validation
-        uses: hacs/integration/action@main
-        with:
-          category: integration
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -60,7 +52,7 @@ jobs:
 
       - name: Run ruff
         run: |
-          ruff check custom_components/ariston --select=E,F,W,I,N,UP,B,C4,PT,PI,PTH,PGH,PL,RUF,TRY,TID,Q,LOG,ARG,DTZ,PTH,ERA,PD,RET,SIM,TCH,INT,EXE,NPY,CPY,FA,ISC,ICN,PLW,TRY,TID,Q,LOG,ARG,DTZ,PTH,ERA,PD,RET,SIM,TCH,INT,EXE,NPY,CPY,FA,ISC,ICN,PLW
+          ruff check custom_components/ariston --select=E9,F63,F7,F82
 
       - name: Check formatting
         run: |

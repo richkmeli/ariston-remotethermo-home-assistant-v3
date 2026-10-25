@@ -47,7 +47,9 @@ class DeviceDataUpdateCoordinator(DataUpdateCoordinator[None]):
         self._rate_limit_delay = 0
         self._max_rate_limit_delay = 300  # 5 minutes max delay
 
-    def _async_update_with_retry(self, async_update_state: Callable[[], Coroutine[Any, Any, None]]):
+    def _async_update_with_retry(
+        self, async_update_state: Callable[[], Coroutine[Any, Any, None]]
+    ):
         """Return an update method that handles rate limiting and retries with exponential backoff."""
 
         async def _wrapped_update() -> None:
@@ -67,7 +69,9 @@ class DeviceDataUpdateCoordinator(DataUpdateCoordinator[None]):
                         if status_code == 429:
                             # Rate limited - exponential backoff with longer delays
                             self._rate_limit_delay = min(
-                                self._rate_limit_delay * 2 if self._rate_limit_delay else 60,
+                                self._rate_limit_delay * 2
+                                if self._rate_limit_delay
+                                else 60,
                                 self._max_rate_limit_delay,
                             )
                             delay = self._rate_limit_delay
@@ -93,7 +97,9 @@ class DeviceDataUpdateCoordinator(DataUpdateCoordinator[None]):
                             continue
                     # Non-retryable error or max retries exceeded
                     self._rate_limit_delay = 0
-                    raise UpdateFailed(f"Error communicating with Ariston API: {err}") from err
+                    raise UpdateFailed(
+                        f"Error communicating with Ariston API: {err}"
+                    ) from err
                 except asyncio.TimeoutError as err:
                     last_exception = err
                     _LOGGER.warning(
@@ -106,15 +112,21 @@ class DeviceDataUpdateCoordinator(DataUpdateCoordinator[None]):
                         await asyncio.sleep(delay)
                         continue
                     self._rate_limit_delay = 0
-                    raise UpdateFailed(f"Timeout communicating with Ariston API: {err}") from err
+                    raise UpdateFailed(
+                        f"Timeout communicating with Ariston API: {err}"
+                    ) from err
                 except Exception as err:
                     # Unexpected errors - don't retry
                     self._rate_limit_delay = 0
                     _LOGGER.exception("Unexpected error communicating with Ariston API")
-                    raise UpdateFailed(f"Unexpected error communicating with Ariston API: {err}") from err
+                    raise UpdateFailed(
+                        f"Unexpected error communicating with Ariston API: {err}"
+                    ) from err
 
             # All retries exhausted
             self._rate_limit_delay = 0
-            raise UpdateFailed(f"Max retries exceeded communicating with Ariston API: {last_exception}") from last_exception
+            raise UpdateFailed(
+                f"Max retries exceeded communicating with Ariston API: {last_exception}"
+            ) from last_exception
 
         return _wrapped_update
