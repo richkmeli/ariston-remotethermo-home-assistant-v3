@@ -3,12 +3,28 @@
 from __future__ import annotations
 
 import logging
+import subprocess
+import sys
 
 import voluptuous as vol
 
-from ariston import Ariston, DeviceAttribute, SystemType
-from ariston.ariston_api import ConnectionException
-from ariston.const import ARISTON_API_URL, ARISTON_USER_AGENT
+try:
+    from ariston import Ariston, DeviceAttribute, SystemType
+    from ariston.ariston_api import ConnectionException
+    from ariston.const import ARISTON_API_URL, ARISTON_USER_AGENT
+except ImportError:
+    # Auto-install ariston dependency for manual/HACS installs
+    _LOGGER = logging.getLogger(__name__)
+    _LOGGER.warning("Ariston library not found, installing ariston==0.19.9...")
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "ariston==0.19.9"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    from ariston import Ariston, DeviceAttribute, SystemType
+    from ariston.ariston_api import ConnectionException
+    from ariston.const import ARISTON_API_URL, ARISTON_USER_AGENT
+    _LOGGER.info("Ariston library installed successfully")
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_DEVICE_ID,
