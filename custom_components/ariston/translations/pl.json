@@ -30,9 +30,7 @@
           "bus_errors_scan_interval": "Interwał skanowania błędów magistrali (sekundy)",
           "water_heater_temperature_unit_override": "Nadpisz jednostkę temperatury grzejnika wody"
         },
-        "description": {
-          "water_heater_temperature_unit_override": "Wymuś jednostkę miary dla grzejnika wody. Ustaw 'fahrenheit', jeśli temperatury wyświetlają się błędnie (np. 253°F zamiast 123°F). 'auto' używa ustawienia urządzenia."
-        }
+        "description": "Wymuś jednostkę miary dla grzejnika wody. Ustaw 'fahrenheit', jeśli temperatury wyświetlają się błędnie (np. 253°F zamiast 123°F). 'auto' używa ustawienia urządzenia."
       }
     }
   }

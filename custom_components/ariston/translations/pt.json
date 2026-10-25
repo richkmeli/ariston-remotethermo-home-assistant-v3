@@ -30,9 +30,7 @@
           "bus_errors_scan_interval": "Intervalo de scan de erros do bus (segundos)",
           "water_heater_temperature_unit_override": "Forçar unidade de temperatura do aquecedor de água"
         },
-        "description": {
-          "water_heater_temperature_unit_override": "Forçar a unidade de medida para o aquecedor de água. Definir 'fahrenheit' se as temperaturas aparecerem incorretas (ex: 253°F em vez de 123°F). 'auto' usa o padrão do dispositivo."
-        }
+        "description": "Forçar a unidade de medida para o aquecedor de água. Definir 'fahrenheit' se as temperaturas aparecerem incorretas (ex: 253°F em vez de 123°F). 'auto' usa o padrão do dispositivo."
       }
     }
   }

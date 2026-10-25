@@ -30,9 +30,7 @@
           "bus_errors_scan_interval": "Intervalle de scan des erreurs de bus (secondes)",
           "water_heater_temperature_unit_override": "Forcer l'unité de température du chauffe-eau"
         },
-        "description": {
-          "water_heater_temperature_unit_override": "Forcer l'unité de mesure pour le chauffe-eau. Mettre 'fahrenheit' si les températures s'affichent mal (ex: 253°F au lieu de 123°F). 'auto' utilise le réglage du dispositif."
-        }
+        "description": "Forcer l'unité de mesure pour le chauffe-eau. Mettre 'fahrenheit' si les températures s'affichent mal (ex: 253°F au lieu de 123°F). 'auto' utilise le réglage du dispositif."
       }
     }
   }

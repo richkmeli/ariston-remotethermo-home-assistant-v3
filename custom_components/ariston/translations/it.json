@@ -30,9 +30,7 @@
           "bus_errors_scan_interval": "Intervallo scansione errori bus (secondi)",
           "water_heater_temperature_unit_override": "Override unità temperatura scaldabagno"
         },
-        "description": {
-          "water_heater_temperature_unit_override": "Forza l'unità di misura per lo scaldabagno. Imposta 'fahrenheit' se le temperature appaiono errate (es. 253°F invece di 123°F). 'auto' usa l'impostazione del dispositivo."
-        }
+        "description": "Forza l'unità di misura per lo scaldabagno. Imposta 'fahrenheit' se le temperature appaiono errate (es. 253°F invece di 123°F). 'auto' usa l'impostazione del dispositivo."
       }
     }
   }

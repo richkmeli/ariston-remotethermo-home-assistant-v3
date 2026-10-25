@@ -30,9 +30,7 @@
           "bus_errors_scan_interval": "Intervalo de escaneo de errores de bus (segundos)",
           "water_heater_temperature_unit_override": "Forzar unidad de temperatura del calentador de agua"
         },
-        "description": {
-          "water_heater_temperature_unit_override": "Forzar la unidad de medida para el calentador de agua. Establecer 'fahrenheit' si las temperaturas se muestran incorrectamente (ej: 253°F en lugar de 123°F). 'auto' usa el valor por defecto del dispositivo."
-        }
+        "description": "Forzar la unidad de medida para el calentador de agua. Establecer 'fahrenheit' si las temperaturas se muestran incorrectamente (ej: 253°F en lugar de 123°F). 'auto' usa el valor por defecto del dispositivo."
       }
     }
   }
