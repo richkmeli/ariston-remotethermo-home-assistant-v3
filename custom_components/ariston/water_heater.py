@@ -10,11 +10,12 @@ from homeassistant.components.water_heater import (
     WaterHeaterEntityFeature,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 
 from .const import (
     ARISTON_WATER_HEATER_TYPES,
+    CONF_WATER_HEATER_TEMPERATURE_UNIT_OVERRIDE,
     DOMAIN,
     NAME,
     AristonWaterHeaterEntityDescription,
@@ -59,6 +60,9 @@ class AristonWaterHeater(AristonEntity, WaterHeaterEntity):
     ) -> None:
         """Initialize the water heater."""
         super().__init__(coordinator, description)
+        self._temp_unit_override = self.coordinator.config_entry.options.get(
+            CONF_WATER_HEATER_TEMPERATURE_UNIT_OVERRIDE, "auto"
+        )
 
     @property
     def name(self) -> str:
@@ -78,22 +82,26 @@ class AristonWaterHeater(AristonEntity, WaterHeaterEntity):
     @property
     def current_temperature(self):
         """Return the temperature."""
-        return self.device.water_heater_current_temperature
+        temp = self.device.water_heater_current_temperature
+        return self._convert_temp(temp)
 
     @property
     def min_temp(self):
         """Return the minimum temperature."""
-        return self.device.water_heater_minimum_temperature
+        temp = self.device.water_heater_minimum_temperature
+        return self._convert_temp(temp)
 
     @property
     def target_temperature(self):
         """Return the temperature we try to reach."""
-        return self.device.water_heater_target_temperature
+        temp = self.device.water_heater_target_temperature
+        return self._convert_temp(temp)
 
     @property
     def max_temp(self):
         """Return the maximum temperature."""
-        return self.device.water_heater_maximum_temperature
+        temp = self.device.water_heater_maximum_temperature
+        return self._convert_temp(temp)
 
     @property
     def precision(self) -> float:
@@ -103,7 +111,24 @@ class AristonWaterHeater(AristonEntity, WaterHeaterEntity):
     @property
     def temperature_unit(self):
         """Return the unit of measurement."""
+        if self._temp_unit_override == "celsius":
+            return UnitOfTemperature.CELSIUS
+        if self._temp_unit_override == "fahrenheit":
+            return UnitOfTemperature.FAHRENHEIT
         return self.device.water_heater_temperature_unit
+
+    def _convert_temp(self, temp):
+        """Convert temperature based on override setting."""
+        if temp is None:
+            return None
+        if self._temp_unit_override == "auto":
+            return temp
+        device_unit = self.device.water_heater_temperature_unit
+        if self._temp_unit_override == "celsius" and device_unit == UnitOfTemperature.FAHRENHEIT:
+            return (temp - 32) * 5 / 9
+        if self._temp_unit_override == "fahrenheit" and device_unit == UnitOfTemperature.CELSIUS:
+            return temp * 9 / 5 + 32
+        return temp
 
     @property
     def supported_features(self) -> int:
@@ -141,8 +166,23 @@ class AristonWaterHeater(AristonEntity, WaterHeaterEntity):
             self.name,
         )
 
-        await self.device.async_set_water_heater_temperature(temperature)
+        # Convert temperature back to device's native unit if override is set
+        device_temp = self._convert_temp_back(temperature)
+        await self.device.async_set_water_heater_temperature(device_temp)
         self.async_write_ha_state()
+
+    def _convert_temp_back(self, temp):
+        """Convert temperature from override unit back to device's native unit."""
+        if temp is None:
+            return None
+        if self._temp_unit_override == "auto":
+            return temp
+        device_unit = self.device.water_heater_temperature_unit
+        if self._temp_unit_override == "celsius" and device_unit == UnitOfTemperature.FAHRENHEIT:
+            return temp * 9 / 5 + 32
+        if self._temp_unit_override == "fahrenheit" and device_unit == UnitOfTemperature.CELSIUS:
+            return (temp - 32) * 5 / 9
+        return temp
 
     async def async_set_operation_mode(self, operation_mode):
         """Set operation mode."""

@@ -58,10 +58,11 @@ BUS_ERRORS_COORDINATOR: Final[str] = "bus_errors_coordinator"
 BUS_ERRORS_SCAN_INTERVAL: Final[str] = "bus_errors_scan_interval"
 API_URL_SETTING: Final[str] = "api_url_setting"
 API_USER_AGENT: Final[str] = "api_user_agent"
+CONF_WATER_HEATER_TEMPERATURE_UNIT_OVERRIDE: Final[str] = "water_heater_temperature_unit_override"
 
-DEFAULT_SCAN_INTERVAL_SECONDS: Final[int] = 180
+DEFAULT_SCAN_INTERVAL_SECONDS: Final[int] = 300
 DEFAULT_ENERGY_SCAN_INTERVAL_MINUTES: Final[int] = 60
-DEFAULT_BUS_ERRORS_SCAN_INTERVAL_SECONDS: Final[int] = 600
+DEFAULT_BUS_ERRORS_SCAN_INTERVAL_SECONDS: Final[int] = 900
 
 ATTR_TARGET_TEMP_STEP: Final[str] = "target_temp_step"
 ATTR_HEAT_REQUEST: Final[str] = "heat_request"
@@ -554,6 +555,26 @@ ARISTON_SENSOR_TYPES: list[AristonSensorEntityDescription] = [
             WheType.Lux,
             WheType.Lux2,
         ],
+    ),
+    AristonSensorEntityDescription(
+        key=DeviceProperties.DHW_STORAGE_TEMPERATURE,
+        name=f"{NAME} DHW current temperature",
+        icon="mdi:thermometer-water",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+        get_native_value=lambda entity: entity.device.water_heater_current_temperature,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        system_types=[SystemType.GALEVO, SystemType.BSB],
+    ),
+    AristonSensorEntityDescription(
+        key=DeviceProperties.DHW_TEMP,
+        name=f"{NAME} DHW target temperature",
+        icon="mdi:thermometer-water",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+        get_native_value=lambda entity: entity.device.water_heater_target_temperature,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        system_types=[SystemType.GALEVO, SystemType.BSB],
     ),
 ]
 
