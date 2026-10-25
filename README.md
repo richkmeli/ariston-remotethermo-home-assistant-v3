@@ -65,7 +65,17 @@ Feel free to test something else and open an issue or pull request in this fork:
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=richkmeli&repository=ariston-remotethermo-home-assistant-v3&category=integration) or copy the `custom_components/ariston` folder to your configuration/custom_components path.
 Use the add integration UI to set up your device.
 
-> **Fork note:** HACS installs this fork only when a release with the `ariston-remotethermo-home-assistant-v3.zip` asset is published. Until then, install it manually by copying `custom_components/ariston` into your Home Assistant configuration.
+> **Fork note:** HACS installs this fork from its releases. The release asset must contain the integration files at the ZIP root (no extra `ariston/` folder), because HACS extracts it directly into `custom_components/ariston`.
+
+### Troubleshooting: integration disappeared after an update
+
+If Home Assistant logs `No setup or config entry setup function defined` or the integration is no longer listed, check the installed layout:
+
+```bash
+ls /config/custom_components/ariston
+```
+
+You should see `__init__.py` and `manifest.json` directly in that folder. If there is another `ariston/` subfolder, a malformed release ZIP (v0.20.0–v0.20.6) was installed. With Home Assistant stopped, delete `custom_components/ariston`, install v0.20.7 or later from HACS, and restart.
 
 | ![Kazam_screenshot_00003](https://user-images.githubusercontent.com/6751243/146653448-ff7b6f9d-cbf1-4555-9a75-61bf68bc9d3e.png) | ![Kazam_screenshot_00004](https://user-images.githubusercontent.com/6751243/146653484-52e39d78-7c6f-44ae-888d-acf246147290.png) | ![Kazam_screenshot_00010](https://user-images.githubusercontent.com/6751243/147890590-6c4ebf38-16d9-421f-9b81-8f43298ec62f.png) |
 |:-------------------------:|:-------------------------:|:-------------------------:|

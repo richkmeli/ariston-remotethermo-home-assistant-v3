@@ -84,6 +84,16 @@ jobs:
             --output="$GITHUB_WORKSPACE/ariston-remotethermo-home-assistant-v3.zip" \
             HEAD:custom_components/ariston
 
+      - name: Verify HACS-compatible layout
+        run: |
+          unzip -Z1 ariston-remotethermo-home-assistant-v3.zip > /tmp/zip-contents.txt
+          grep -qx 'manifest.json' /tmp/zip-contents.txt
+          grep -qx '__init__.py' /tmp/zip-contents.txt
+          if grep -q '^ariston/' /tmp/zip-contents.txt; then
+            echo "ERROR: the zip contains an enclosing ariston/ folder" >&2
+            exit 1
+          fi
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
