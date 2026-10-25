@@ -5,8 +5,6 @@ from __future__ import annotations
 import logging
 import subprocess
 import sys
-import threading
-import time
 
 import voluptuous as vol
 
@@ -17,43 +15,37 @@ def _ensure_ariston_installed():
     """Ensure ariston library is installed, auto-upgrade if needed."""
     logger = logging.getLogger(__name__)
     
-    def _check_and_install():
-        try:
-            import ariston
-            from packaging import version
-            
-            current = getattr(ariston, '__version__', '0.0.0')
-            required = REQUIRED_ARISTON_VERSION
-            
-            if version.parse(current) < version.parse(required):
-                logger.info(f"Upgrading ariston from {current} to {required}...")
-                subprocess.check_call(
-                    [sys.executable, "-m", "pip", "install", f"ariston=={required}"],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                )
-                logger.info("Ariston library upgraded successfully")
-            else:
-                logger.debug(f"Ariston {current} already satisfies requirement >= {required}")
-                
-        except ImportError:
-            logger.warning(f"Ariston library not found, installing ariston=={REQUIRED_ARISTON_VERSION}...")
+    try:
+        import ariston
+        from packaging import version
+        
+        current = getattr(ariston, '__version__', '0.0.0')
+        required = REQUIRED_ARISTON_VERSION
+        
+        if version.parse(current) < version.parse(required):
+            logger.info(f"Upgrading ariston from {current} to {required}...")
             subprocess.check_call(
-                [sys.executable, "-m", "pip", "install", f"ariston=={REQUIRED_ARISTON_VERSION}"],
+                [sys.executable, "-m", "pip", "install", f"ariston=={required}"],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
-            logger.info("Ariston library installed successfully")
-        except Exception as err:
-            logger.error(f"Failed to install/upgrade ariston: {err}")
-    
-    # Run in background thread to not block HA startup
-    thread = threading.Thread(target=_check_and_install, daemon=True)
-    thread.start()
-    # Give it a moment to complete if already installed
-    thread.join(timeout=2)
+            logger.info("Ariston library upgraded successfully")
+        else:
+            logger.debug(f"Ariston {current} already satisfies requirement >= {required}")
+            
+    except ImportError:
+        logger.warning(f"Ariston library not found, installing ariston=={REQUIRED_ARISTON_VERSION}...")
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", f"ariston=={REQUIRED_ARISTON_VERSION}"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        logger.info("Ariston library installed successfully")
+    except Exception as err:
+        logger.error(f"Failed to install/upgrade ariston: {err}")
+        raise
 
-# Initialize ariston dependency
+# Initialize ariston dependency SYNCHRONOUSLY before other imports
 _ensure_ariston_installed()
 
 from ariston import Ariston, DeviceAttribute, SystemType
