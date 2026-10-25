@@ -20,7 +20,7 @@ from .const import (
     NAME,
     AristonWaterHeaterEntityDescription,
 )
-from .coordinator import DeviceDataUpdateCoordinator
+from .coordinator import DeviceDataUpdateCoordinator, PendingWrite
 from .entity import AristonEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -175,6 +175,12 @@ class AristonWaterHeater(AristonEntity, WaterHeaterEntity):
         # Convert temperature back to device's native unit if override is set
         device_temp = self._convert_temp_back(temperature)
         await self.device.async_set_water_heater_temperature(device_temp)
+        # In BOOST the device enforces its own setpoint, so verifying the
+        # requested temperature would just trigger pointless retries.
+        if self.current_operation != "BOOST":
+            self.coordinator.pending_writes["temperature"] = PendingWrite(
+                prop="temperature", expected=device_temp
+            )
         self.async_write_ha_state()
 
     def _convert_temp_back(self, temp):
@@ -199,6 +205,9 @@ class AristonWaterHeater(AristonEntity, WaterHeaterEntity):
     async def async_set_operation_mode(self, operation_mode):
         """Set operation mode."""
         await self.device.async_set_water_heater_operation_mode(operation_mode)
+        self.coordinator.pending_writes["operation_mode"] = PendingWrite(
+            prop="operation_mode", expected=operation_mode
+        )
         self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs) -> None:

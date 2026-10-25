@@ -79,6 +79,15 @@ You should see `__init__.py` and `manifest.json` directly in that folder. If the
 
 > **Note:** releases v0.20.0–v0.20.7 also fail on Home Assistant versions older than 2025.1 because they import an API added in 2025.1. v0.20.8 restores compatibility.
 
+### Estimated power and temperature sensors (v0.20.9)
+
+For VELIS water heaters (Velis Evo/Evo2, Lydos, Lydos Hybrid, Lux/Lux2, Andris2) the integration now provides:
+
+- **Instantaneous power**: estimated from the heating state and the rated power configured in the integration options. For a Velis Tech 100 set `1500` W; leave the field empty to keep the sensor disabled. It can be used in the Home Assistant Energy Dashboard.
+- **Current water temperature** and **target water temperature** sensors, in addition to the values already exposed by the water heater entity.
+- **Verified writes**: target temperature and operation mode are checked against the next poll and re-sent up to three times if the cloud silently ignored them.
+- **Live plant settings**: limit, anti-legionella and similar configuration entities are refreshed every 10 minutes instead of only at startup.
+
 | ![Kazam_screenshot_00003](https://user-images.githubusercontent.com/6751243/146653448-ff7b6f9d-cbf1-4555-9a75-61bf68bc9d3e.png) | ![Kazam_screenshot_00004](https://user-images.githubusercontent.com/6751243/146653484-52e39d78-7c6f-44ae-888d-acf246147290.png) | ![Kazam_screenshot_00010](https://user-images.githubusercontent.com/6751243/147890590-6c4ebf38-16d9-421f-9b81-8f43298ec62f.png) |
 |:-------------------------:|:-------------------------:|:-------------------------:|
 

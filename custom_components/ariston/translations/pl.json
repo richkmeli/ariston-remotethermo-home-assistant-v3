@@ -28,9 +28,10 @@
           "scan_interval": "Interwał skanowania stref (sekundy)",
           "energy_scan_interval": "Interwał skanowania danych energetycznych (minuty)",
           "bus_errors_scan_interval": "Interwał skanowania błędów magistrali (sekundy)",
-          "water_heater_temperature_unit_override": "Nadpisz jednostkę temperatury grzejnika wody"
+          "water_heater_temperature_unit_override": "Nadpisz jednostkę temperatury grzejnika wody",
+          "rated_power_w": "Moc znamionowa (W)"
         },
-        "description": "Wymuś jednostkę miary dla grzejnika wody. Ustaw 'fahrenheit', jeśli temperatury wyświetlają się błędnie (np. 253°F zamiast 123°F). 'auto' używa ustawienia urządzenia."
+        "description": "Wymuś jednostkę miary dla grzejnika wody. Ustaw 'fahrenheit', jeśli temperatury wyświetlają się błędnie (np. 253°F zamiast 123°F). 'auto' używa ustawienia urządzenia. Pozostaw puste, aby wyłączyć szacowany czujnik mocy chwilowej."
       }
     }
   }

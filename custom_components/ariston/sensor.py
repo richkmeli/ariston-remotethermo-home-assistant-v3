@@ -9,7 +9,12 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .const import ARISTON_SENSOR_TYPES, DOMAIN, AristonSensorEntityDescription
+from .const import (
+    ARISTON_SENSOR_TYPES,
+    DOMAIN,
+    INSTANTANEOUS_POWER_KEY,
+    AristonSensorEntityDescription,
+)
 from .coordinator import DeviceDataUpdateCoordinator
 from .entity import AristonEntity
 
@@ -35,6 +40,12 @@ async def async_setup_entry(
                 description.whe_types,
             )
         ):
+            # The estimated power sensor needs a user-provided rated power.
+            if (
+                description.key == INSTANTANEOUS_POWER_KEY
+                and coordinator.rated_power_w is None
+            ):
+                continue
             ariston_sensors.append(
                 AristonSensor(
                     coordinator,

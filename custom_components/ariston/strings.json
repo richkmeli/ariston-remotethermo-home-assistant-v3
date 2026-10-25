@@ -28,9 +28,10 @@
           "scan_interval": "Zone Scan Interval (seconds)",
           "energy_scan_interval": "Energy Scan Interval (minutes)",
           "bus_errors_scan_interval": "Bus Errors Scan Interval (seconds)",
-          "water_heater_temperature_unit_override": "Water Heater Temperature Unit Override"
+          "water_heater_temperature_unit_override": "Water Heater Temperature Unit Override",
+          "rated_power_w": "Rated power (W)"
         },
-        "description": "Override the temperature unit for water heater. Set to 'fahrenheit' if temperatures display incorrectly (e.g., 253°F instead of 123°F). 'auto' uses the device default."
+        "description": "Override the temperature unit for water heater. Set to 'fahrenheit' if temperatures display incorrectly (e.g., 253°F instead of 123°F). 'auto' uses the device default. Leave empty to disable the estimated instantaneous power sensor."
       }
     }
   }

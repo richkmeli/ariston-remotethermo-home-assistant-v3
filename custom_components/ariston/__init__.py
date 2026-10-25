@@ -35,6 +35,7 @@ from .const import (
     DOMAIN,
     ENERGY_COORDINATOR,
     ENERGY_SCAN_INTERVAL,
+    RATED_POWER_W,
 )
 from .coordinator import DeviceDataUpdateCoordinator
 
@@ -105,6 +106,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         coordinator = DeviceDataUpdateCoordinator(
             hass, device, scan_interval_seconds, COORDINATOR, device.async_update_state
         )
+        rated_power_w = entry.options.get(RATED_POWER_W)
+        try:
+            coordinator.rated_power_w = (
+                int(rated_power_w) if rated_power_w not in (None, "") else None
+            )
+        except (TypeError, ValueError):
+            _LOGGER.warning("Ignoring invalid rated power option: %s", rated_power_w)
+            coordinator.rated_power_w = None
 
         hass.data.setdefault(DOMAIN, {}).setdefault(
             entry.unique_id, {COORDINATOR: {}, ENERGY_COORDINATOR: {}}

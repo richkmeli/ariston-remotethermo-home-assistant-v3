@@ -37,7 +37,12 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.components.switch import SwitchEntityDescription
-from homeassistant.const import UnitOfEnergy, UnitOfTemperature, UnitOfTime
+from homeassistant.const import (
+    UnitOfEnergy,
+    UnitOfPower,
+    UnitOfTemperature,
+    UnitOfTime,
+)
 from homeassistant.helpers.entity import EntityCategory, EntityDescription
 
 DOMAIN: Final[str] = "ariston"
@@ -51,6 +56,26 @@ API_URL_SETTING: Final[str] = "api_url_setting"
 API_USER_AGENT: Final[str] = "api_user_agent"
 CONF_WATER_HEATER_TEMPERATURE_UNIT_OVERRIDE: Final[str] = (
     "water_heater_temperature_unit_override"
+)
+RATED_POWER_W: Final[str] = "rated_power_w"
+INSTANTANEOUS_POWER_KEY: Final[str] = "instantaneous_power"
+
+# Water heater families that expose a boolean heating state (``is_heating``),
+# used to estimate the instantaneous electrical power.
+POWER_SENSOR_WHE_TYPES: Final[tuple[WheType, ...]] = (
+    WheType.Evo,
+    WheType.Evo2,
+    WheType.Lydos,
+    WheType.LydosHybrid,
+    WheType.Lux,
+    WheType.Lux2,
+    WheType.Andris2,
+)
+
+# ``AristonEvoOneDevice`` (WheType.Evo) does not expose a read target
+# temperature, so it is excluded from the target temperature sensor.
+TARGET_TEMPERATURE_WHE_TYPES: Final[tuple[WheType, ...]] = tuple(
+    whe_type for whe_type in POWER_SENSOR_WHE_TYPES if whe_type is not WheType.Evo
 )
 
 DEFAULT_SCAN_INTERVAL_SECONDS: Final[int] = 300
@@ -66,6 +91,19 @@ ATTR_ERRORS: Final[str] = "errors"
 
 EXTRA_STATE_ATTRIBUTE: Final[str] = "Attribute"
 EXTRA_STATE_DEVICE_METHOD: Final[str] = "DeviceMethod"
+
+
+def _estimated_power(entity: Any) -> int | None:
+    """Estimate instantaneous power from rated power and heating state.
+
+    The Ariston API does not expose a power reading for VELIS devices, so the
+    value is derived: rated power while the resistor is heating, zero when it
+    is not. ``None`` means the user did not configure the rated power.
+    """
+    rated_power = getattr(entity.coordinator, "rated_power_w", None)
+    if rated_power is None:
+        return None
+    return rated_power if getattr(entity.device, "is_heating", None) else 0
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -578,9 +616,18 @@ ARISTON_SENSOR_TYPES: list[AristonSensorEntityDescription] = [
         get_native_value=lambda entity: entity.device.water_heater_current_temperature,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         system_types=[SystemType.VELIS],
-        whe_types=[
-            WheType.Evo,
-        ],
+        whe_types=list(POWER_SENSOR_WHE_TYPES),
+    ),
+    AristonSensorEntityDescription(
+        key=EvoLydosDeviceProperties.REQ_TEMP,
+        name=f"{NAME} target temperature",
+        icon="mdi:thermometer-chevron-up",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+        get_native_value=lambda entity: entity.device.water_heater_target_temperature,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        system_types=[SystemType.VELIS],
+        whe_types=list(TARGET_TEMPERATURE_WHE_TYPES),
     ),
     AristonSensorEntityDescription(
         key=VelisDeviceProperties.PROC_REQ_TEMP,
@@ -620,6 +667,17 @@ ARISTON_SENSOR_TYPES: list[AristonSensorEntityDescription] = [
         get_native_value=lambda entity: entity.device.water_heater_target_temperature,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         system_types=[SystemType.GALEVO, SystemType.BSB],
+    ),
+    AristonSensorEntityDescription(
+        key=INSTANTANEOUS_POWER_KEY,
+        name=f"{NAME} instantaneous power",
+        icon="mdi:lightning-bolt",
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        get_native_value=_estimated_power,
+        system_types=[SystemType.VELIS],
+        whe_types=list(POWER_SENSOR_WHE_TYPES),
     ),
 ]
 

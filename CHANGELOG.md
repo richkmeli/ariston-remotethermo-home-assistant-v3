@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.9] - 2026-10-26
+
+### Added
+- **Estimated instantaneous power sensor** for VELIS water heaters (Evo, Evo2, Lydos, Lydos Hybrid, Lux, Lux2, Andris2). The Ariston API does not report electrical power directly, so the sensor uses the heating state (`is_heating`) and a configurable rated power. Set it in the integration options (e.g. `1500` W for a Velis Tech 100); leave it empty to keep the sensor disabled. Useful for the Home Assistant Energy Dashboard.
+- **Current and target water temperature sensors** for all VELIS water heaters, exposing the same values as the water heater entity to history, statistics and automations.
+- **Options translations**: the new rated power option is translated in all bundled languages.
+
+### Fixed
+- **Writes are now verified**: after setting the target temperature or the operation mode, the value is checked against the next poll and re-sent up to three times if the cloud silently ignored it. Temperature writes issued while in `BOOST` are skipped on purpose, because the device enforces its own setpoint in that mode.
+- **Stale configuration entities**: plant settings (max setpoint, anti-legionella and similar number/switch entities) are now refreshed periodically (every 10 minutes) instead of only at setup, fixing entities that kept the startup values forever (upstream issue #487).
+
+### Internal
+- Coordinator gained `pending_writes`, `rated_power_w` and a non-fatal `async_update_settings()` refresh.
+
 ## [0.20.8] - 2026-10-25
 
 ### Fixed

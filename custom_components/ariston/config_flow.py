@@ -29,6 +29,7 @@ from .const import (
     DOMAIN,
     ENERGY_SCAN_INTERVAL,
     NAME,
+    RATED_POWER_W,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -173,6 +174,8 @@ class AristonOptionsFlow(config_entries.OptionsFlow):
     async def async_step_init(self, user_input=None):
         """Manage the options."""
         if user_input is not None:
+            if user_input.get(RATED_POWER_W) in (None, ""):
+                user_input.pop(RATED_POWER_W, None)
             return self.async_create_entry(title="", data=user_input)
 
         options = self.config_entry.options
@@ -186,6 +189,7 @@ class AristonOptionsFlow(config_entries.OptionsFlow):
         water_heater_temp_unit_override = options.get(
             CONF_WATER_HEATER_TEMPERATURE_UNIT_OVERRIDE, "auto"
         )
+        rated_power_w = options.get(RATED_POWER_W)
 
         return self.async_show_form(
             step_id="init",
@@ -207,6 +211,14 @@ class AristonOptionsFlow(config_entries.OptionsFlow):
                         CONF_WATER_HEATER_TEMPERATURE_UNIT_OVERRIDE,
                         default=water_heater_temp_unit_override,
                     ): vol.In(["auto", "celsius", "fahrenheit"]),
+                    vol.Optional(
+                        RATED_POWER_W,
+                        default=rated_power_w,
+                    ): vol.Any(
+                        None,
+                        "",
+                        vol.All(vol.Coerce(int), vol.Range(min=1)),
+                    ),
                 }
             ),
             last_step=True,

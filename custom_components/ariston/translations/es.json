@@ -28,9 +28,10 @@
           "scan_interval": "Intervalo de escaneo de zonas (segundos)",
           "energy_scan_interval": "Intervalo de escaneo de datos energéticos (minutos)",
           "bus_errors_scan_interval": "Intervalo de escaneo de errores de bus (segundos)",
-          "water_heater_temperature_unit_override": "Forzar unidad de temperatura del calentador de agua"
+          "water_heater_temperature_unit_override": "Forzar unidad de temperatura del calentador de agua",
+          "rated_power_w": "Potencia nominal (W)"
         },
-        "description": "Forzar la unidad de medida para el calentador de agua. Establecer 'fahrenheit' si las temperaturas se muestran incorrectamente (ej: 253°F en lugar de 123°F). 'auto' usa el valor por defecto del dispositivo."
+        "description": "Forzar la unidad de medida para el calentador de agua. Establecer 'fahrenheit' si las temperaturas se muestran incorrectamente (ej: 253°F en lugar de 123°F). 'auto' usa el valor por defecto del dispositivo. Deje vacío para desactivar el sensor de potencia instantánea estimada."
       }
     }
   }
