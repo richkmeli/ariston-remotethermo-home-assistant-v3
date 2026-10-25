@@ -75,7 +75,9 @@ If Home Assistant logs `No setup or config entry setup function defined` or the 
 ls /config/custom_components/ariston
 ```
 
-You should see `__init__.py` and `manifest.json` directly in that folder. If there is another `ariston/` subfolder, a malformed release ZIP (v0.20.0–v0.20.6) was installed. With Home Assistant stopped, delete `custom_components/ariston`, install v0.20.7 or later from HACS, and restart.
+You should see `__init__.py` and `manifest.json` directly in that folder. If there is another `ariston/` subfolder, a malformed release ZIP (v0.20.0–v0.20.6) was installed. With Home Assistant stopped, delete `custom_components/ariston`, install v0.20.8 or later from HACS, and restart.
+
+> **Note:** releases v0.20.0–v0.20.7 also fail on Home Assistant versions older than 2025.1 because they import an API added in 2025.1. v0.20.8 restores compatibility.
 
 | ![Kazam_screenshot_00003](https://user-images.githubusercontent.com/6751243/146653448-ff7b6f9d-cbf1-4555-9a75-61bf68bc9d3e.png) | ![Kazam_screenshot_00004](https://user-images.githubusercontent.com/6751243/146653484-52e39d78-7c6f-44ae-888d-acf246147290.png) | ![Kazam_screenshot_00010](https://user-images.githubusercontent.com/6751243/147890590-6c4ebf38-16d9-421f-9b81-8f43298ec62f.png) |
 |:-------------------------:|:-------------------------:|:-------------------------:|

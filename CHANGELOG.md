@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.8] - 2026-10-25
+
+### Fixed
+- **Home Assistant < 2025.1 startup**: `const.py` imported `WaterHeaterEntityDescription` from `homeassistant.components.water_heater`, but that class only exists since Home Assistant 2025.1. On older versions (including 2024.x) the integration failed to import, so Home Assistant reported `No setup or config entry setup function defined` and the integration disappeared. `AristonWaterHeaterEntityDescription` now only inherits from `AristonBaseEntityDescription`, which works on every supported release.
+- **Code formatting**: formatted the integration with `ruff format`.
+
+### Internal
+- CI lint now uses valid ruff selectors and the codebase passes `ruff format --check`.
+
 ## [0.20.7] - 2026-10-25
 
 ### Fixed
