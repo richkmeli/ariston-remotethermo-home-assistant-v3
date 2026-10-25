@@ -61,11 +61,19 @@ try:
     from ariston import Ariston, DeviceAttribute, SystemType
     from ariston.ariston_api import ConnectionException
     from ariston.const import ARISTON_API_URL, ARISTON_USER_AGENT
+    _ARISTON_AVAILABLE = True
 except ImportError as err:
     _LOGGER = logging.getLogger(__name__)
     _LOGGER.critical("CRITICAL: Cannot import ariston library: %s", err)
     _LOGGER.critical("Check logs above for pip install errors. Integration cannot load.")
-    raise
+    _ARISTON_AVAILABLE = False
+    # Define dummy classes to avoid NameError in async_setup_entry
+    class Ariston: pass
+    class DeviceAttribute: pass
+    class SystemType: pass
+    class ConnectionException(Exception): pass
+    ARISTON_API_URL = ""
+    ARISTON_USER_AGENT = ""
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -108,6 +116,13 @@ PLATFORMS: list[str] = [
     Platform.WATER_HEATER,
 ]
 
+
+async def async_setup(hass: HomeAssistant, config: dict) -> bool:
+    """Set up the Ariston component (required for HA to recognize the integration)."""
+    # This is needed for HA to properly load the integration
+    # The actual setup is done via config entries in async_setup_entry
+    return True
+
 SERVICE_SET_ITEM_BY_ID = "set_item_by_id"
 ATTR_ITEM_ID = "item_id"
 ATTR_ZONE = "zone"
@@ -125,6 +140,10 @@ SET_ITEM_BY_ID_SCHEMA = vol.Schema(
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Ariston from a config entry."""
+    if not _ARISTON_AVAILABLE:
+        _LOGGER.error("Ariston library not available - cannot set up integration")
+        return False
+    
     ariston = Ariston()
     try:
         api_url_setting = entry.data.get(API_URL_SETTING, ARISTON_API_URL)
