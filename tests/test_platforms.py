@@ -18,6 +18,7 @@ from homeassistant.components.water_heater import WaterHeaterEntityFeature
 
 from custom_components.ariston import binary_sensor, sensor, switch, water_heater
 from custom_components.ariston.const import (
+    BUS_ERRORS_COORDINATOR,
     COORDINATOR,
     DOMAIN,
     ENERGY_COORDINATOR,
@@ -81,6 +82,7 @@ def hass(coordinator):
             "entry-id": {
                 COORDINATOR: coordinator,
                 ENERGY_COORDINATOR: coordinator,
+                BUS_ERRORS_COORDINATOR: coordinator,
             }
         }
     }
