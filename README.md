@@ -83,10 +83,88 @@ You should see `__init__.py` and `manifest.json` directly in that folder. If the
 
 For VELIS water heaters (Velis Evo/Evo2, Lydos, Lydos Hybrid, Lux/Lux2, Andris2) the integration now provides:
 
-- **Instantaneous power**: estimated from the heating state and the rated power configured in the integration options. For a Velis Tech 100 set `1500` W; leave the field empty to keep the sensor disabled. It can be used in the Home Assistant Energy Dashboard.
+- **Instantaneous power**: estimated from the heating state and the rated power configured in the integration options. For a Velis Tech 100 set `1500` W; leave the field empty to keep the sensor disabled.
 - **Current water temperature** and **target water temperature** sensors, in addition to the values already exposed by the water heater entity.
 - **Verified writes**: target temperature, operation mode and power are checked against the next poll and re-sent up to three times if the cloud silently ignored them.
 - **Live plant settings**: limit, anti-legionella and similar configuration entities are refreshed every 10 minutes instead of only at startup. The integration also keeps working if the settings endpoint is temporarily unavailable.
+
+### Energy Dashboard (v0.20.11)
+
+The cloud only reports energy in hourly buckets, so the integration exposes **today's total** for each consumption counter. The value is the sum of the hourly samples and **resets at local midnight**: this is what the Energy Dashboard expects from a `total` sensor.
+
+- If your model reports metering, the `... energy consumption` / `... electricity consumption` sensors can be added directly to **Settings → Dashboards → Energy**.
+- The **instantaneous power** sensor is not an energy counter. To use it in the Energy Dashboard, create a **Riemann sum integral** helper (*Settings → Devices & services → Helpers*), with the power sensor as input, and add the resulting kWh sensor to the dashboard. The value is an estimate: it uses the rated power while the boiler is heating and zero otherwise.
+
+### Water heater state and the power switch
+
+`water_heater.ariston` reports the **operation mode** as its state (`MANUAL`, `PROGRAM`, `BOOST`, …). When the boiler is switched off, Home Assistant keeps showing the last mode instead of `off`; this is how the water heater platform works, not a bug in the integration.
+
+Use `switch.ariston_power` when you need a reliable on/off state for dashboards or automations:
+
+```yaml
+action: switch.turn_off
+target:
+  entity_id: switch.ariston_power
+```
+
+Since v0.20.10 both `switch.ariston_power` and `water_heater.turn_on`/`turn_off` call the same API, and the switch state is refreshed immediately after either call.
+
+### Example automations
+
+**BOOST while the photovoltaic system is producing excess power.** `BOOST` is available on Lux/Lux2 (Velis Tech) and raises the setpoint to the maximum; the boiler returns to the previous mode when the boost ends.
+
+```yaml
+automation:
+  - alias: "Ariston BOOST on solar surplus"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.solar_export_power
+        above: 1200
+        for: "00:10:00"
+    actions:
+      - action: water_heater.set_operation_mode
+        target:
+          entity_id: water_heater.ariston
+        data:
+          operation_mode: BOOST
+
+  - alias: "Ariston back to PROGRAM"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.solar_export_power
+        below: 200
+        for: "00:10:00"
+    actions:
+      - action: water_heater.set_operation_mode
+        target:
+          entity_id: water_heater.ariston
+        data:
+          operation_mode: PROGRAM
+```
+
+Replace `sensor.solar_export_power` with your inverter/energy sensor. Check the exact entity IDs in **Developer tools → States**, because the water heater entity may not be `water_heater.ariston` if you renamed the device.
+
+**Notify when the tank gets cold.**
+
+```yaml
+automation:
+  - alias: "Ariston water temperature low"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.ariston_current_temperature
+        below: 40
+        for: "00:15:00"
+    actions:
+      - action: notify.persistent_notification
+        data:
+          title: "Ariston"
+          message: "Water temperature below 40 °C."
+```
+
+### Diagnostics
+
+If something does not work, download a diagnostics dump from **Settings → Devices & services → Ariston → ⋮ → Download diagnostics** and attach it to the issue. Credentials, gateway IDs and geolocation are redacted automatically; the dump contains device type, features, plant settings, raw state and consumption sequences.
+
 
 | ![Kazam_screenshot_00003](https://user-images.githubusercontent.com/6751243/146653448-ff7b6f9d-cbf1-4555-9a75-61bf68bc9d3e.png) | ![Kazam_screenshot_00004](https://user-images.githubusercontent.com/6751243/146653484-52e39d78-7c6f-44ae-888d-acf246147290.png) | ![Kazam_screenshot_00010](https://user-images.githubusercontent.com/6751243/147890590-6c4ebf38-16d9-421f-9b81-8f43298ec62f.png) |
 |:-------------------------:|:-------------------------:|:-------------------------:|

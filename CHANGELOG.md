@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.11] - 2026-10-26
+
+### Added
+- **Diagnostics download**: *Settings → Devices & services → Ariston → Download diagnostics* now includes device type, features, plant settings, raw state and consumption sequences. Credentials, gateway IDs and geolocation are redacted automatically.
+- **Power and heating attributes** on the `water_heater` entity, so dashboards and templates can read the on/off state and the heating state without cross-referencing other entities.
+- **Operation mode `select`** is now created for all VELIS models, not only Evo One. It exposes the same modes as the water heater card and is convenient for `select.select_option` automations.
+- **Documentation**: Energy Dashboard setup, BOOST/anti-legionella automation examples, diagnostics instructions and the water heater state limitation.
+
+### Fixed
+- **Energy consumption sensors now report today's total.** The cloud returns one value per hour for the current day, but the upstream library only returns the last sample (usually zero). The integration now sums the hourly series and resets the counter at local midnight, so the Energy Dashboard receives a correct daily total. This also stops the `Detected new cycle ... last_reset 1970` log spam (upstream issues #439, #484, #486).
+
 ## [0.20.10] - 2026-10-26
 
 ### Added
