@@ -36,6 +36,10 @@ DEVICE_WRITE_PROPS: dict[str, tuple[str, str]] = {
         "water_heater_current_mode_text",
         "async_set_water_heater_operation_mode",
     ),
+    "power": (
+        "water_heater_power_value",
+        "async_set_power",
+    ),
 }
 
 

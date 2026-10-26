@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.10] - 2026-10-26
+
+### Added
+- **Anti-legionella cycle binary sensor** is now created for Lux and Lux2 water heaters too (previously only Evo2, Lydos, Lydos Hybrid and Andris2). It shows when the boiler is running the high-temperature anti-legionella cycle.
+- **Remaining time sensor** is now also created for Andris2 devices, which expose the same `rmTm` value.
+
+### Fixed
+- **Power writes are verified**: switching the water heater on/off (both `water_heater.turn_on`/`turn_off` and the `power` switch) is now checked against the next poll and retried up to three times if the cloud silently ignored it.
+- **Immediate power state update**: `water_heater.turn_on`/`turn_off` now refresh the `power` switch immediately instead of waiting for the next poll.
+- **Setup no longer fails when the plant-settings endpoint is down**: VELIS devices load their settings inside `async_get_features()`. A temporary HTTP error on that endpoint is now logged and retried by the coordinator, instead of blocking the whole integration setup (upstream issue #455).
+
 ## [0.20.9] - 2026-10-26
 
 ### Added

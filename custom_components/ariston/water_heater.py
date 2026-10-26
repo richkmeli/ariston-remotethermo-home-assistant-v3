@@ -213,7 +213,21 @@ class AristonWaterHeater(AristonEntity, WaterHeaterEntity):
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the water heater off."""
         await self.device.async_set_power(False)
+        if self.device.system_type == SystemType.VELIS:
+            self.coordinator.pending_writes["power"] = PendingWrite(
+                prop="power", expected=False
+            )
+        self.async_write_ha_state()
+        # Keep the power switch entity in sync without waiting for the poll.
+        self.coordinator.async_update_listeners()
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the water heater on."""
         await self.device.async_set_power(True)
+        if self.device.system_type == SystemType.VELIS:
+            self.coordinator.pending_writes["power"] = PendingWrite(
+                prop="power", expected=True
+            )
+        self.async_write_ha_state()
+        # Keep the power switch entity in sync without waiting for the poll.
+        self.coordinator.async_update_listeners()

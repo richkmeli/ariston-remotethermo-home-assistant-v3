@@ -98,7 +98,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if device is None:
             return False
 
-        await device.async_get_features()
+        try:
+            await device.async_get_features()
+        except Exception as err:  # noqa: BLE001 - settings are optional
+            # VELIS devices load plant settings inside async_get_features; a
+            # failing settings endpoint must not block the whole setup, because
+            # the coordinator retries the refresh in the background.
+            if not getattr(device, "features", None):
+                raise
+            _LOGGER.warning(
+                "Unable to read plant settings for %s, will retry later: %s",
+                device.name,
+                err,
+            )
 
         scan_interval_seconds = entry.options.get(
             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL_SECONDS

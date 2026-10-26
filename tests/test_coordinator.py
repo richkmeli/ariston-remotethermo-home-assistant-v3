@@ -305,3 +305,36 @@ async def test_secondary_coordinator_skips_settings_and_writes(mock_hass, mock_d
 
     mock_device.async_update_settings.assert_not_awaited()
     assert coordinator.pending_writes
+
+
+def _pending_power(expected=False):
+    from custom_components.ariston.coordinator import PendingWrite
+
+    return PendingWrite(prop="power", expected=expected)
+
+
+async def test_pending_power_write_cleared_when_device_matches(
+    coordinator, mock_device
+):
+    """A power change already applied by the cloud is not retried."""
+    mock_device.water_heater_power_value = False
+    mock_device.async_set_power = AsyncMock()
+    coordinator.pending_writes["power"] = _pending_power(False)
+
+    await coordinator._async_check_pending_writes()
+
+    assert coordinator.pending_writes == {}
+    mock_device.async_set_power.assert_not_awaited()
+
+
+async def test_pending_power_write_retried_on_mismatch(coordinator, mock_device):
+    """A power change ignored by the cloud is sent again."""
+    mock_device.water_heater_power_value = True
+    mock_device.async_set_power = AsyncMock()
+    pending = _pending_power(False)
+    coordinator.pending_writes["power"] = pending
+
+    await coordinator._async_check_pending_writes()
+
+    mock_device.async_set_power.assert_awaited_once_with(False)
+    assert pending.tries == 1

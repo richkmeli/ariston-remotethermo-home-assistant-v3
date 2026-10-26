@@ -579,6 +579,7 @@ ARISTON_SENSOR_TYPES: list[AristonSensorEntityDescription] = [
             WheType.Evo2,
             WheType.Lux2,
             WheType.Lydos,
+            WheType.Andris2,
         ],
     ),
     AristonSensorEntityDescription(
@@ -736,6 +737,8 @@ ARISTON_BINARY_SENSOR_TYPES: list[AristonBinarySensorEntityDescription] = [
         system_types=[SystemType.VELIS],
         whe_types=[
             WheType.Evo2,
+            WheType.Lux,
+            WheType.Lux2,
             WheType.Lydos,
             WheType.LydosHybrid,
             WheType.Andris2,

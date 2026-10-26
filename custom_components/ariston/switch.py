@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import logging
 
+from ariston.const import VelisDeviceProperties
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
 from .const import ARISTON_SWITCH_TYPES, DOMAIN, AristonSwitchEntityDescription
-from .coordinator import DeviceDataUpdateCoordinator
+from .coordinator import DeviceDataUpdateCoordinator, PendingWrite
 from .entity import AristonEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -59,12 +60,19 @@ class AristonSwitch(AristonEntity, SwitchEntity):
         """Return true if switch is on."""
         return self.entity_description.get_is_on(self)
 
+    async def _async_set(self, value: bool) -> None:
+        """Apply the write and verify the power switch on the next poll."""
+        await self.entity_description.set_value(self, value)
+        if self.entity_description.key == VelisDeviceProperties.ON:
+            self.coordinator.pending_writes["power"] = PendingWrite(
+                prop="power", expected=value
+            )
+        self.async_write_ha_state()
+
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
-        await self.entity_description.set_value(self, True)
-        self.async_write_ha_state()
+        await self._async_set(True)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the device off."""
-        await self.entity_description.set_value(self, False)
-        self.async_write_ha_state()
+        await self._async_set(False)
