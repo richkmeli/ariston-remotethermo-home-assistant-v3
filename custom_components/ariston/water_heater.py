@@ -77,7 +77,7 @@ class AristonWaterHeater(AristonEntity, WaterHeaterEntity):
     @property
     def icon(self):
         """Return the icon to use in the frontend."""
-        return "mdi:water-pump"
+        return "mdi:water-boiler"
 
     @property
     def current_temperature(self):

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.12] - 2026-10-26
+
+### Changed
+- **Water heater icon**: the `water_heater` entity now uses `mdi:water-boiler` instead of `mdi:water-pump`, so it is visually consistent with a boiler and with the power switch used in floor plans.
+- **Documentation**: added a picture-elements example showing how to drive the floor-plan icon from `switch.ariston_power` (on/off colour) while keeping `water_heater.ariston` for modes and temperatures.
+
 ## [0.20.11] - 2026-10-26
 
 ### Added

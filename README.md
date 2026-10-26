@@ -96,6 +96,30 @@ target:
 
 Since v0.20.10 both `switch.ariston_power` and `water_heater.turn_on`/`turn_off` call the same API, and the switch state is refreshed immediately after either call.
 
+#### Floor plan (picture elements)
+
+Use the **power switch** for the icon: it is the entity whose state is actually `on`/`off`, so the icon colour follows the boiler. Tap toggles the power, hold opens the water heater card with modes and temperatures.
+
+```yaml
+type: picture-elements
+image: /local/planimetria.png
+elements:
+  - type: state-icon
+    entity: switch.ariston_power
+    icon: mdi:water-boiler
+    state_color: true
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+      entity: water_heater.ariston
+    style:
+      left: 85%
+      top: 74%
+```
+
+If you prefer two separate icons, keep `water_heater.ariston` for the mode/temperature card and add `switch.ariston_power` on top for the on/off state. Do not use `water_heater.ariston` alone for the colour: its state is always the operation mode, even when the power is off.
+
 ### Example automations
 
 **BOOST while the photovoltaic system is producing excess power.** `BOOST` is available on Lux/Lux2 (Velis Tech) and raises the setpoint to the maximum; the boiler returns to the previous mode when the boost ends.
