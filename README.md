@@ -19,26 +19,13 @@ It does not use the Ariston website: it uses the Ariston API reverse-engineered 
 | Less sensors, switches, etc |  More sensors, switches, etc |
 | New code, may contain a lot of bugs | Old, tested code |
 
-## Changelog v0.20.0
-### Fixed
-- **Config flow strings**: Resolved placeholder references in `strings.json` for proper UI translations
-- **Device registry**: Fixed manufacturer name to "Ariston" for correct device identification
-- **Exception handling**: Replaced broad exception catches with specific `ConnectionException` handling
-- **Rate limiting**: Enhanced coordinator with retry logic for 429, 5xx errors, and timeouts with exponential backoff
+## Changelog
 
-### Changed
-- **Minimum Home Assistant**: Raised from 2023.1 to 2024.1
-- **Removed deprecated code**: Dropped `WaterHeaterEntityEntityDescription` compatibility layer
-- **Type hints**: Added comprehensive type annotations across the codebase
+See [CHANGELOG.md](CHANGELOG.md) for the full version history. Recent highlights:
 
-### Added
-- **Unit tests**: Basic test structure for coordinator and config flow (`tests/`)
-- **CI/CD**: GitHub Actions workflow for testing, linting, and validation
-- **CHANGELOG.md**: Version history tracking
-
-### Internal
-- Improved logging with context across all components
-- Updated all 9 language translations (en, it, fr, es, pt, ru, ca, pl, ua)
+- **v0.20.11**: daily energy totals, diagnostics download, water heater `power`/`heating` attributes, operation mode select for all VELIS.
+- **v0.20.10**: anti-legionella sensor on Lux/Lux2, verified power writes, resilient setup when the settings endpoint is down.
+- **v0.20.9**: estimated power and water temperature sensors, write verification, periodic plant settings refresh.
 
 ## TODO
 - [x] Localization. Available in English, Catalan, Italian, Russian, Ukrainian, French, Spanish, Portuguese, Polish.
